@@ -43,7 +43,7 @@ replace is_urban = 0 if rner == 1 | rnwr == 1 | ryorksr == 1 | remidr == 1 | rwm
 replace empee = 1 if selfemp == 1
 
 // Descriptive Statistics
-summarize Satis Worth Happy Anxious childs disios education_level is_urban
+summarize A005 Satis Worth Happy Anxious childs disios education_level is_urban
 
 
 // Frequencies for Categorical Variables
