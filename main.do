@@ -101,7 +101,7 @@ ttest Worth, by(married)
 ttest Happy, by(married)
 ttest Anxious, by(married)
 
-// Preliminary check for correlation
+// Multivariate analysis nya BELUM YAKIN hwehae sorry i'll do it
 correlate Satis Worth Happy Anxious A005 married disios childs empee education_level is_urban
 
 // Basic Comparison (Married vs. Cohabitation)
