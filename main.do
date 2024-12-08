@@ -42,76 +42,92 @@ replace is_urban = 0 if rner == 1 | rnwr == 1 | ryorksr == 1 | remidr == 1 | rwm
 // c. Employment Status
 replace empee = 1 if selfemp == 1
 
+// labeling the marital status
+label define marital_status 0 "Cohabit" 1 "Married"
+label values married marital_status
+
 // Descriptive Statistics
-summarize A005 Satis Worth Happy Anxious childs disios
+summarize Satis Worth Happy Anxious A005 childs disios
 
 
-// Frequencies for Categorical Variables
+// Summary for Categorical Variables
 tabulate married
-tabulate cohab
-tabulate education_level
+graph pie, over (married) plabel(_all percent) legend(label(1 "cohabit" 0 "married"))
+graph bar (count), over (married) legend(label(1 "cohabit" 0 "married"))
+
+tabulate education_level married
+graph pie, over(education_level) plabel(_all percent) by(married)
 tabulate is_urban
+graph pie, over(is_urban) plabel(_all percent) by(married)
+
 
 // Histograms for Wellbeing Variables
 // for married
-histogram Satis if married == 1, bin(10) percent normal title("Histogram of Satisfaction")
-histogram Worth if married == 1, bin(10) percent normal title("Histogram of Worthwhile Feeling")
-histogram Happy if married == 1, bin(10) percent normal title("Histogram of Happiness")
-histogram Anxious if married == 1, bin(10) percent normal title("Histogram of Anxiety")
+histogram Satis, bin(10) percent normal title("Histogram of Satisfaction") by(married)
+histogram Worth, bin(10) percent normal title("Histogram of Satisfaction") by(married)
+histogram Happy, bin(10) percent normal title("Histogram of Satisfaction") by(married)
+histogram Anxious, bin(10) percent normal title("Histogram of Satisfaction") by(married)
 
-// for cohab
-histogram Satis if married == 0, bin(10) percent normal title("Histogram of Satisfaction")
-histogram Worth if married == 0, bin(10) percent normal title("Histogram of Worthwhile Feeling")
-histogram Happy if married == 0, bin(10) percent normal title("Histogram of Happiness")
-histogram Anxious if married == 0, bin(10) percent normal title("Histogram of Anxiety")
+// Bar Graphs for Wellbeing Variables
+graph bar (mean) Satis Worth Happy Anxious, over(married) title("Mean Satisfaction by Marital Status")
+tabstat Satis Worth Happy Anxious, by(married)
 
-// Bar Graphs for Categorical Variables
-graph bar (mean) Satis, over(married) title("Mean Satisfaction by Marital Status")
-graph bar (mean) Worth, over(married) title("Mean Satisfaction by Marital Status")
-graph bar (mean) Happy, over(married) title("Mean Satisfaction by Marital Status")
-graph bar (mean) Anxious, over(married) title("Mean Satisfaction by Marital Status")
+// Box plot
+graph box Satis, over(married)
+graph box Happy, over(married)
+graph box Worth, over(married)
+graph box Anxious, over(married)
 
 // age for married
-histogram A005 if married == 1
-histogram A005 if married == 0
-
-// dispos
-summarize disios if married == 1
-summarize disios if married == 0
+histogram A005, normal
+histogram A005, by(married) normal
+tabstat A005, by(married) stat(mean sd min max)
 
 // number of childs
+tabulate childs
 tabulate childs if married == 1
 tabulate childs if married == 0
 
+// dispos
+histogram disios, normal
+histogram disios, by(married) normal
+tabstat disios, by(married) stat(mean sd min max)
+
 // employment status
-graph pie if married == 1, over (empee) plabel(_all percent)
-graph pie if married == 0, over (empee) plabel(_all percent)
+graph pie, over (empee) plabel(_all percent)
+graph pie, over (empee) plabel(_all percent) by(married) legend(label(1 "unemployed" 0 "employed"))
 
 // level of education
-graph pie if married == 1, over (education_level) plabel(_all percent)
-graph pie if married == 0, over (education_level) plabel(_all percent)
+graph pie, over (education_level) plabel(_all percent)
+graph pie, over (education_level) plabel(_all percent) by(married)
 
 // urban and rural
-graph pie if married == 1, over (is_urban) plabel(_all percent)
-graph pie if married == 0, over (is_urban) plabel(_all percent)
+graph pie, over (is_urban) plabel(_all percent)
+graph pie, over (is_urban) plabel(_all percent) by(married)
+
+// label back the marital status
+* Create a new variable "married_binary" and recode values
+generate married_binary = .
+
+* Assign 1 for married and 0 for cohabit
+replace married_binary = 1 if married == "married"
+replace married_binary = 0 if married == "cohabit"
+
+* Check if the new variable was created correctly
+tab married_binary
+
 
 // t-test for Cohabitation vs Marriage
-ttest Satis, by(married)
-ttest Worth, by(married)
-ttest Happy, by(married)
-ttest Anxious, by(married)
+ttest Satis, by(married_binary)
+ttest Worth, by(married_binary)
+ttest Happy, by(married_binary)
+ttest Anxious, by(married_binary)
 
 // Multivariate analysis nya BELUM YAKIN hwehae sorry i'll do it
-correlate Satis Worth Happy Anxious A005 married disios childs empee education_level is_urban
+correlate Satis Worth Happy Anxious A005 married_binary disios childs empee education_level is_urban
 
-// Basic Comparison (Married vs. Cohabitation)
-reg Satis married cohab A005 disios childs empee education_level is_urban
-reg Worth married cohab A005 disios childs empee education_level is_urban
-reg Happy married cohab A005 disios childs empee education_level is_urban
-reg Anxious married cohab A005 disios childs empee education_level is_urban
-
-// Socioeconomic Control Variables
-reg Satis married cohab A005 disios childs empee education_level is_urban
-reg Worth married cohab A005 disios childs empee education_level is_urban
-reg Happy married cohab A005 disios childs empee education_level is_urban
-reg Anxious married cohab A005 disios childs empee education_level is_urban 
+// Basic Comparison (married_binary vs. Cohabitation)
+reg Satis married_binary A005 disios childs empee education_level is_urban
+reg Worth married_binary A005 disios childs empee education_level is_urban
+reg Happy married_binary A005 disios childs empee education_level is_urban
+reg Anxious married_binary A005 disios childs empee education_level is_urban
