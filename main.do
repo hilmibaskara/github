@@ -42,13 +42,12 @@ replace is_urban = 0 if rner == 1 | rnwr == 1 | ryorksr == 1 | remidr == 1 | rwm
 // c. Employment Status
 replace empee = 1 if selfemp == 1
 
-// labeling the marital status
-label define marital_status 0 "Cohabit" 1 "Married"
-label values married marital_status
-
 // Descriptive Statistics
 summarize Satis Worth Happy Anxious A005 childs disios
 
+// labeling the marital status
+label define marital_status 0 "Cohabit" 1 "Married"
+label values married marital_status
 
 // Summary for Categorical Variables
 tabulate married
@@ -64,12 +63,12 @@ graph pie, over(is_urban) plabel(_all percent) by(married)
 // Histograms for Wellbeing Variables
 // for married
 histogram Satis, bin(10) percent normal title("Histogram of Satisfaction") by(married)
-histogram Worth, bin(10) percent normal title("Histogram of Satisfaction") by(married)
-histogram Happy, bin(10) percent normal title("Histogram of Satisfaction") by(married)
-histogram Anxious, bin(10) percent normal title("Histogram of Satisfaction") by(married)
+histogram Worth, bin(10) percent normal title("Histogram of Worth") by(married)
+histogram Happy, bin(10) percent normal title("Histogram of Happy") by(married)
+histogram Anxious, bin(10) percent normal title("Histogram of Anxious") by(married)
 
 // Bar Graphs for Wellbeing Variables
-graph bar (mean) Satis Worth Happy Anxious, over(married) title("Mean Satisfaction by Marital Status")
+graph bar (mean) Satis Worth Happy Anxious, over(married) title("Mean by Marital Status")
 tabstat Satis Worth Happy Anxious, by(married)
 
 // Box plot
