@@ -72,10 +72,10 @@ graph bar (mean) Satis Worth Happy Anxious, over(married) title("Mean by Marital
 tabstat Satis Worth Happy Anxious, by(married)
 
 // Box plot
-graph box Satis, over(married)
+/* graph box Satis, over(married)
 graph box Happy, over(married)
 graph box Worth, over(married)
-graph box Anxious, over(married)
+graph box Anxious, over(married) */
 
 // age for married
 histogram A005, normal
